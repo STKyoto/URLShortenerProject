@@ -24,7 +24,7 @@ services:
     container_name: link-transformation-db
     environment:
       POSTGRES_USER: ${DB_USERNAME}
-      POSTGRES_PASSWORD: ${PASSWORD}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_DB: prod_db
     volumes:
       - postgres_data:/var/lib/postgresql/data
