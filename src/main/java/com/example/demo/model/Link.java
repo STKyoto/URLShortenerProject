@@ -28,7 +28,7 @@ public class Link {
     @Column(name = "expires_at")
     private LocalDateTime expiresAt;
 
-
+    private int clickCount = 0;
 
     //constructors, getters and setters
     public Link() {
