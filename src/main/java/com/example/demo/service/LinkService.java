@@ -78,8 +78,14 @@ public class LinkService {
         }
     }
 
-
-
+    public long getClickCountByShortUrl(String shortUrl) {
+        Optional<Link> linkOpt = linkRepository.findByShortUrl(shortUrl);
+        if (linkOpt.isPresent()) {
+            return linkOpt.get().getClickCount();
+        } else {
+            throw new RuntimeException("Link not found");
+        }
+    }
 
 
 

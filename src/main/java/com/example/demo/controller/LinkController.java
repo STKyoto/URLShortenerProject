@@ -53,4 +53,10 @@ public class LinkController {
     public void recordClick(@PathVariable String shortUrl) {
         linkService.recordClick(shortUrl);
     }
+
+    //click statistics
+    @GetMapping("/{shortUrl}/stats")
+    public long getClickStats(@PathVariable String shortUrl) {
+        return linkService.getClickCountByShortUrl(shortUrl);
+    }
 }

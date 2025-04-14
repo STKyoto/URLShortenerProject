@@ -35,6 +35,14 @@ public class Link {
 
     }
 
+    public int getClickCount() {
+        return clickCount;
+    }
+
+    public void setClickCount(int clickCount) {
+        this.clickCount = clickCount;
+    }
+
     public Link(String originalUrl, String shortUrl, User user, LocalDateTime expiresAt) {
         this.originalUrl = originalUrl;
         this.shortUrl = shortUrl;
