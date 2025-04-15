@@ -5,6 +5,7 @@ import com.example.demo.model.User;
 import com.example.demo.repository.LinkRepository;
 import com.example.demo.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -51,6 +52,7 @@ public class LinkService {
         return sb.toString();
     }
 
+    @Cacheable("links")
     public Optional<Link> getLinkByShortUrl(String shortUrl) {
         return linkRepository.findByShortUrl(shortUrl);
     }
