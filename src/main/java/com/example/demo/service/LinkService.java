@@ -6,6 +6,7 @@ import com.example.demo.repository.LinkRepository;
 import com.example.demo.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -33,7 +34,7 @@ public class LinkService {
         while (linkRepository.existsByShortUrl(shortUrl)) {
             shortUrl = generateShortUrl();
         }
-        Link link = new Link(originalUrl, shortUrl, user, expiresAt);
+        Link link = new Link(originalUrl, shortUrl, user.getId(), expiresAt);
         return linkRepository.save(link);
     }
 
@@ -54,6 +55,7 @@ public class LinkService {
         return linkRepository.findByShortUrl(shortUrl);
     }
 
+    @Transactional
     public void recordClick(String shortUrl) {
         Optional<Link> linkOpt = linkRepository.findByShortUrl(shortUrl);
 

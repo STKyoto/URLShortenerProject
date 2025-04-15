@@ -2,9 +2,14 @@ package com.example.demo.model;
 
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
+
+@Getter
+@Setter
 @Entity
 @Table (name = "links")
 public class Link {
@@ -19,8 +24,8 @@ public class Link {
     private String shortUrl;
 
     @ManyToOne
-    @JoinColumn(name = "username", nullable = false)
-    private User user;
+    @JoinColumn(name = "user_id", nullable = false)
+    private int userId;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
@@ -28,6 +33,7 @@ public class Link {
     @Column(name = "expires_at")
     private LocalDateTime expiresAt;
 
+    @Column(name = "click_count", nullable = false)
     private int clickCount = 0;
 
     //constructors, getters and setters
@@ -35,66 +41,12 @@ public class Link {
 
     }
 
-    public int getClickCount() {
-        return clickCount;
-    }
-
-    public void setClickCount(int clickCount) {
-        this.clickCount = clickCount;
-    }
-
-    public Link(String originalUrl, String shortUrl, User user, LocalDateTime expiresAt) {
+    public Link(String originalUrl, String shortUrl, int userId, LocalDateTime expiresAt) {
         this.originalUrl = originalUrl;
         this.shortUrl = shortUrl;
-        this.user = user;
+        this.userId = userId;
         this.expiresAt = expiresAt;
     }
 
-    public int getId() {
-        return id;
-    }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getOriginalUrl() {
-        return originalUrl;
-    }
-
-    public void setOriginalUrl(String originalUrl) {
-        this.originalUrl = originalUrl;
-    }
-
-    public String getShortUrl() {
-        return shortUrl;
-    }
-
-    public void setShortUrl(String shortUrl) {
-        this.shortUrl = shortUrl;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public LocalDateTime getExpiresAt() {
-        return expiresAt;
-    }
-
-    public void setExpiresAt(LocalDateTime expiresAt) {
-        this.expiresAt = expiresAt;
-    }
 }
