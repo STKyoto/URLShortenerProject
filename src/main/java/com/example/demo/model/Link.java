@@ -2,14 +2,10 @@ package com.example.demo.model;
 
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
-
+import lombok.Data;
 import java.time.LocalDateTime;
 
-
-@Getter
-@Setter
+@Data
 @Entity
 @Table (name = "links")
 public class Link {
@@ -38,7 +34,6 @@ public class Link {
 
     //constructors, getters and setters
     public Link() {
-
     }
 
     public Link(String originalUrl, String shortUrl, int userId, LocalDateTime expiresAt) {

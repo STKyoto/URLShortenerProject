@@ -20,7 +20,6 @@ public class LinkService {
     private final LinkRepository linkRepository;
     private final UserRepository userRepository;
 
-    @Autowired
     public LinkService(LinkRepository linkRepository, UserRepository userRepository) {
         this.linkRepository = linkRepository;
         this.userRepository = userRepository;
@@ -41,8 +40,6 @@ public class LinkService {
     private String generateShortUrl() {
         String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
         Random random = new Random();
-
-        //the link can be 6-8 characters
         int length = 6 + random.nextInt(3);
         StringBuilder sb = new StringBuilder(length);
         for (int i = 0; i < length; i++) {
@@ -59,9 +56,7 @@ public class LinkService {
     public void recordClick(String shortUrl) {
         Optional<Link> linkOpt = linkRepository.findByShortUrl(shortUrl);
 
-        //if link found
         if (linkOpt.isPresent()) {
-            //get the Link ojbect from Optional and then get its unique identifier
             linkRepository.incrementClickCount(linkOpt.get().getId());
         } else {
             throw new RuntimeException("Link not found");
