@@ -1,21 +1,14 @@
 package com.example.demo.repository;
 
 import com.example.demo.model.User;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.*;
+import java.util.Optional;
 
 @Repository
-public class UserRepository {
-
-    private final Map<String, User> fakeDb = new HashMap<>();
-
-    public Optional<User> findByUsername(String username) {
-        return Optional.ofNullable(fakeDb.get(username));
-    }
-
-    public void save(User user) {
-        fakeDb.put(user.getUsername(), user);
-    }
+public interface UserRepository extends JpaRepository<User, Long> {
+    Optional<User> findByUsername(String username);
+    boolean existsByUsername(String username);
 }
 
