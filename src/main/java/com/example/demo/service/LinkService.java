@@ -4,7 +4,6 @@ import com.example.demo.model.Link;
 import com.example.demo.model.User;
 import com.example.demo.repository.LinkRepository;
 import com.example.demo.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,7 +32,7 @@ public class LinkService {
         while (linkRepository.existsByShortUrl(shortUrl)) {
             shortUrl = generateShortUrl();
         }
-        Link link = new Link(originalUrl, shortUrl, user.getId(), expiresAt);
+        Link link = new Link(originalUrl, shortUrl, user, expiresAt);
         return linkRepository.save(link);
     }
 
