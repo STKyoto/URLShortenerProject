@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
-
+import com.example.demo.dto.LinkDto;
+import com.example.demo.mapper.LinkMapper;
 import com.example.demo.model.Link;
 import com.example.demo.service.LinkService;
 import org.springframework.web.bind.annotation.*;
@@ -11,6 +12,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/UrlShortener/links")
 public class LinkController {
+
     private final LinkService linkService;
 
     public LinkController(LinkService linkService) {
@@ -18,39 +20,38 @@ public class LinkController {
     }
 
     @PostMapping("/create")
-    public Link createLink(@RequestParam String originalUrl, @RequestParam String username, @RequestParam(required = false) String expiresAt) {
+    public LinkDto createLink(@RequestParam String originalUrl,
+                              @RequestParam String username,
+                              @RequestParam(required = false) String expiresAt) {
         LocalDateTime expiration = null;
-
         if (expiresAt != null && !expiresAt.isEmpty()) {
             expiration = LocalDateTime.parse(expiresAt);
         }
-        return linkService.createShortLink(originalUrl, username, expiration);
+
+        Link createdLink = linkService.createShortLink(originalUrl, username, expiration);
+        return LinkMapper.toDto(createdLink);
     }
 
-
     @GetMapping("/{shortUrl}")
-    public Link getLink(@PathVariable String shortUrl) {
+    public LinkDto getLink(@PathVariable String shortUrl) {
         Optional<Link> linkOpt = linkService.getLinkByShortUrl(shortUrl);
-
-
         Link link = linkOpt.orElseThrow(() -> new RuntimeException("Link not found"));
 
         if (link.getExpiresAt() != null && link.getExpiresAt().isBefore(LocalDateTime.now())) {
             throw new RuntimeException("This link has expired");
         }
 
-        return linkOpt.orElseThrow(() -> new RuntimeException("Link not found"));
+        return LinkMapper.toDto(link);
     }
-
 
     @PostMapping("/{shortUrl}/click")
     public void recordClick(@PathVariable String shortUrl) {
         linkService.recordClick(shortUrl);
     }
 
-
     @GetMapping("/{shortUrl}/stats")
     public long getClickStats(@PathVariable String shortUrl) {
         return linkService.getClickCountByShortUrl(shortUrl);
     }
 }
+
