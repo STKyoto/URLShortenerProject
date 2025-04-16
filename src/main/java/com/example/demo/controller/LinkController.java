@@ -1,6 +1,8 @@
 package com.example.demo.controller;
 
 
+import com.example.demo.dto.LinkRequestDto;
+import com.example.demo.dto.LinkResponseDto;
 import com.example.demo.model.Link;
 import com.example.demo.service.LinkService;
 import org.springframework.web.bind.annotation.*;
@@ -19,27 +21,20 @@ public class LinkController {
 
     @PostMapping("/create")
     public Link createLink(@RequestParam String originalUrl, @RequestParam String username, @RequestParam(required = false) String expiresAt) {
-        LocalDateTime expiration = null;
-
-        if (expiresAt != null && !expiresAt.isEmpty()) {
-            expiration = LocalDateTime.parse(expiresAt);
-        }
-        return linkService.createShortLink(originalUrl, username, expiration);
+        LinkRequestDto requestDto = new LinkRequestDto();
+        requestDto.setOriginalUrl(originalUrl);
+        requestDto.setExpiresAt(expiresAt);
+        return linkService.createShortLink(requestDto, username);
     }
 
 
     @GetMapping("/{shortUrl}")
     public Link getLink(@PathVariable String shortUrl) {
-        Optional<Link> linkOpt = linkService.getLinkByShortUrl(shortUrl);
-
-
-        Link link = linkOpt.orElseThrow(() -> new RuntimeException("Link not found"));
-
-        if (link.getExpiresAt() != null && link.getExpiresAt().isBefore(LocalDateTime.now())) {
+        LinkResponseDto responseDto = linkService.getLinkByShortUrl(shortUrl);
+        if (responseDto.getExpiresAt() != null && responseDto.getExpiresAt().isBefore(LocalDateTime.now())) {
             throw new RuntimeException("This link has expired");
         }
-
-        return linkOpt.orElseThrow(() -> new RuntimeException("Link not found"));
+        return responseDto;
     }
 
 
