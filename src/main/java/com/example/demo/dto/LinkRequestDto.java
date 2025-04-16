@@ -3,9 +3,9 @@ package com.example.demo.dto;
 import lombok.Getter;
 import lombok.Setter;
 
+@Getter
+@Setter
 public class LinkRequestDto {
-    @Setter
-    @Getter
     private String originalUrl;
-
+    private String expiresAt;
 }
