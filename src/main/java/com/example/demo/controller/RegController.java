@@ -1,8 +1,10 @@
 package com.example.demo.controller;
 
+import com.example.demo.dto.UserRegRequest;
 import com.example.demo.model.User;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,13 +18,13 @@ public class RegController {
     private final UserService userService;
 
     @PostMapping("/registration")
-    public ResponseEntity<String> registerUser(@RequestParam String username, @RequestParam String password) {
+    public ResponseEntity<String> registerUser(@Valid @RequestBody UserRegRequest request) {
 
-        if (!password.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).{8,}$")) {
-            return ResponseEntity.badRequest().body("Password must be at least 8 characters long and include uppercase, lowercase letters, and digits");
+        if (userRepository.existsByUsername(request.getUsername())) {
+            return ResponseEntity.badRequest().body("Username is already taken");
         }
 
-        User user = new User(username, password);
+        User user = new User(request.getUsername(), request.getPassword());
         userService.registerUser(user);
 
         return ResponseEntity.ok("User registered successfully");
