@@ -20,7 +20,7 @@ public class Link {
     private String shortUrl;
 
     @ManyToOne
-    @JoinColumn(name = "user", nullable = false)
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @Column(name = "created_at", nullable = false, updatable = false)

@@ -1,5 +1,6 @@
 package com.example.demo.config;
 
+import com.example.demo.service.JWTTokenService;
 import com.example.demo.service.UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,14 +12,19 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
     private final UserService userService;
+    private final JWTTokenService jwtTokenService;
+    private final JWTAuthenticationFilter jwtAuthenticationFilter;
 
-    public SecurityConfig(UserService userService){
+    public SecurityConfig(UserService userService,  JWTTokenService jwtTokenService, JWTAuthenticationFilter jwtAuthenticationFilter){
         this.userService = userService;
+        this.jwtTokenService = jwtTokenService;
+        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
     }
 
     @Bean
@@ -26,14 +32,11 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> {
-                    auth.requestMatchers("/UrlShortener/auth/login", "/UrlShortener/auth/registration").permitAll()
+                    auth.requestMatchers("/UrlShortener/auth/login", "/UrlShortener/auth/registration")
+                            .permitAll()
                             .anyRequest().authenticated();
                 })
-                .formLogin(login -> login
-                        .usernameParameter("username")
-                        .passwordParameter("password")
-                        .failureUrl("/login?error"))
-                .logout(logout -> logout.logoutUrl("/logout"));
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 
@@ -46,4 +49,5 @@ public class SecurityConfig {
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
     }
+
 }
