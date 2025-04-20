@@ -16,6 +16,7 @@ import java.util.Random;
 @Service
 public class LinkService {
 
+    private static final Random random = new Random();
     private final LinkRepository linkRepository;
     private final UserRepository userRepository;
 
@@ -38,7 +39,6 @@ public class LinkService {
 
     private String generateShortUrl() {
         String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-        Random random = new Random();
         int length = 6 + random.nextInt(3);
         StringBuilder sb = new StringBuilder(length);
         for (int i = 0; i < length; i++) {

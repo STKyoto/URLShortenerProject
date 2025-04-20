@@ -26,12 +26,7 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String token = request.getHeader("Authorization");
-        String uri = request.getRequestURI();
 
-        if (uri.startsWith("/UrlShortener/auth")) {
-            filterChain.doFilter(request, response);
-            return;
-        }
         if (token != null && token.startsWith("Bearer ")) {
             token = token.substring(7);
             if (jwtTokenService.validateToken(token)) {
