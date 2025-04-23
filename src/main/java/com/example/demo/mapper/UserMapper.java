@@ -10,7 +10,7 @@ public class UserMapper {
         if (user == null) {
             return null;
         }
-        return new UserDto(user.getUsername(), user.getEmail());
+        return new UserDto(user.getUsername());
     }
 
     public User toEntity(UserDto dto) {
@@ -19,7 +19,6 @@ public class UserMapper {
         }
         User user = new User();
         user.setUsername(dto.getUsername());
-        user.setEmail(dto.getEmail());
         return user;
     }
 }
