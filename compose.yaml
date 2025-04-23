@@ -17,7 +17,8 @@ services:
       SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
     depends_on:
       - db
-
+    env_file:
+      - .env
 
   db:
     image: postgres:13

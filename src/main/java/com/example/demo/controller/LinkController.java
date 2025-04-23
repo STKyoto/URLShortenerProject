@@ -1,9 +1,11 @@
 package com.example.demo.controller;
 
 import com.example.demo.dto.LinkDto;
+import com.example.demo.dto.LinkRequestDto;
 import com.example.demo.mapper.LinkMapper;
 import com.example.demo.model.Link;
 import com.example.demo.service.LinkService;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -21,7 +23,7 @@ public class LinkController {
 
     @PostMapping("/create")
     public LinkDto createLink(@RequestParam String originalUrl,
-                              @RequestParam String username,
+                              @AuthenticationPrincipal String username,
                               @RequestParam(required = false) String expiresAt) {
         LocalDateTime expiration = null;
         if (expiresAt != null && !expiresAt.isEmpty()) {

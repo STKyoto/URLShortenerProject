@@ -4,7 +4,8 @@ WORKDIR /app
 
 COPY --chown=gradle:gradle . /app
 
-RUN gradle build --no-daemon
+RUN gradle build -x test --no-daemon
+
 
 FROM openjdk:21 AS runtime
 
@@ -15,3 +16,6 @@ COPY --from=build /app/build/libs/demo-0.0.1-SNAPSHOT.jar /app/link-transformati
 EXPOSE 8080
 
 ENTRYPOINT ["java", "-jar", "link-transformation-project.jar"]
+
+
+

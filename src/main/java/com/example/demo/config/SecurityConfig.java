@@ -32,10 +32,12 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> {
-                    auth.requestMatchers("/UrlShortener/auth/**")
-                            .permitAll()
+                    auth.requestMatchers("/UrlShortener/auth/**").permitAll()
+                            .requestMatchers("/UrlShortener/links/create").authenticated()
+                            .requestMatchers("/UrlShortener/links/**").permitAll()
                             .anyRequest().authenticated();
                 })
+
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }

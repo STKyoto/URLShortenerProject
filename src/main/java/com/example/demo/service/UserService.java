@@ -75,9 +75,7 @@ public class UserService implements UserDetailsService {
         if (userDto.getUsername() != null) {
             user.setUsername(userDto.getUsername());
         }
-        if (userDto.getEmail() != null) {
-            user.setEmail(userDto.getEmail());
-        }
+
         userRepository.save(user);
 
         return userMapper.toDto(user);
