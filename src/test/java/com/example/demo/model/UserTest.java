@@ -30,12 +30,12 @@ class UserTest {
         user.setId(1);
         user.setUsername("bob");
         user.setPassword("hash123");
-        user.setEmail("bob@example.com");
+
 
         assertEquals(1, user.getId());
         assertEquals("bob", user.getUsername());
         assertEquals("hash123", user.getPassword());
-        assertEquals("bob@example.com", user.getEmail());
+
     }
 
     @Test

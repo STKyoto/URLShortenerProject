@@ -33,8 +33,8 @@ class UserControllerTest {
     @Test
     void testGetAllUsers() throws Exception {
         List<UserDto> users = Arrays.asList(
-                new UserDto("user1", "user1@example.com"),
-                new UserDto("user2", "user2@example.com")
+                new UserDto("user1"),
+                new UserDto("user2")
         );
 
         when(userService.getAllUsers()).thenReturn(users);
@@ -43,15 +43,13 @@ class UserControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.size()").value(2))
                 .andExpect(jsonPath("$[0].username").value("user1"))
-                .andExpect(jsonPath("$[0].email").value("user1@example.com"))
-                .andExpect(jsonPath("$[1].username").value("user2"))
-                .andExpect(jsonPath("$[1].email").value("user2@example.com"));
+                .andExpect(jsonPath("$[1].username").value("user2"));
     }
 
     @Test
     void testUpdateUser() throws Exception {
-        UserDto inputUser = new UserDto("updatedUser", "updated@example.com");
-        UserDto updatedUser = new UserDto("updatedUser", "updated@example.com");
+        UserDto inputUser = new UserDto("updatedUser" );
+        UserDto updatedUser = new UserDto("updatedUser");
 
         when(userService.updateUser(eq(1L), any(UserDto.class))).thenReturn(updatedUser);
 
@@ -59,8 +57,8 @@ class UserControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(inputUser)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.username").value("updatedUser"))
-                .andExpect(jsonPath("$.email").value("updated@example.com"));
+                .andExpect(jsonPath("$.username").value("updatedUser"));
+
     }
 }
 

@@ -36,8 +36,7 @@ class UserServiceTest {
     @Test
     void testGetUserByUsername_found() {
         User user = new User("testuser", "pass");
-        user.setEmail("test@example.com");
-        UserDto expectedDto = new UserDto("testuser", "test@example.com");
+        UserDto expectedDto = new UserDto("testuser");
 
         when(userRepository.findByUsername("testuser")).thenReturn(Optional.of(user));
         when(userMapper.toDto(user)).thenReturn(expectedDto);
@@ -46,7 +45,7 @@ class UserServiceTest {
 
         assertThat(result).isPresent();
         assertThat(result.get().getUsername()).isEqualTo("testuser");
-        assertThat(result.get().getEmail()).isEqualTo("test@example.com");
+
     }
 
     @Test
@@ -100,26 +99,22 @@ class UserServiceTest {
     @Test
     void testGetAllUsers() {
         User user1 = new User("user1", "pass1");
-        user1.setEmail("u1@email.com");
         User user2 = new User("user2", "pass2");
-        user2.setEmail("u2@email.com");
 
         when(userRepository.findAll()).thenReturn(Arrays.asList(user1, user2));
-        when(userMapper.toDto(user1)).thenReturn(new UserDto("user1", "u1@email.com"));
-        when(userMapper.toDto(user2)).thenReturn(new UserDto("user2", "u2@email.com"));
+        when(userMapper.toDto(user1)).thenReturn(new UserDto("user1"));
+        when(userMapper.toDto(user2)).thenReturn(new UserDto("user2"));
 
         List<UserDto> result = userService.getAllUsers();
 
         assertThat(result).hasSize(2);
         assertThat(result.get(0).getUsername()).isEqualTo("user1");
-        assertThat(result.get(1).getEmail()).isEqualTo("u2@email.com");
     }
 
     @Test
     void testFindByUsername_success() {
         User user = new User("targetuser", "pass");
-        user.setEmail("target@email.com");
-        UserDto dto = new UserDto("targetuser", "target@email.com");
+        UserDto dto = new UserDto("targetuser");
 
         when(userRepository.findByUsername("targetuser")).thenReturn(Optional.of(user));
         when(userMapper.toDto(user)).thenReturn(dto);
@@ -127,7 +122,6 @@ class UserServiceTest {
         UserDto result = userService.findByUsername("targetuser");
 
         assertThat(result.getUsername()).isEqualTo("targetuser");
-        assertThat(result.getEmail()).isEqualTo("target@email.com");
     }
 
     @Test
@@ -143,10 +137,10 @@ class UserServiceTest {
     void testUpdateUser_success() {
         long userId = 1L;
         User user = new User("oldname", "pass");
-        user.setEmail("old@email.com");
 
-        UserDto inputDto = new UserDto("newname", "new@email.com");
-        UserDto outputDto = new UserDto("newname", "new@email.com");
+
+        UserDto inputDto = new UserDto("newname");
+        UserDto outputDto = new UserDto("newname");
 
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
         when(userMapper.toDto(user)).thenReturn(outputDto);
@@ -154,9 +148,7 @@ class UserServiceTest {
         UserDto updated = userService.updateUser(userId, inputDto);
 
         assertThat(user.getUsername()).isEqualTo("newname");
-        assertThat(user.getEmail()).isEqualTo("new@email.com");
         assertThat(updated.getUsername()).isEqualTo("newname");
-        assertThat(updated.getEmail()).isEqualTo("new@email.com");
 
         verify(userRepository).save(user);
     }

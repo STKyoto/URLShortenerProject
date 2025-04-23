@@ -21,25 +21,22 @@ class UserMapperTest {
 
         User user = new User();
         user.setUsername("testuser");
-        user.setEmail("test@example.com");
 
         UserDto dto = userMapper.toDto(user);
 
         assertNotNull(dto);
         assertEquals("testuser", dto.getUsername());
-        assertEquals("test@example.com", dto.getEmail());
     }
 
     @Test
     void shouldMapDtoToUser() {
 
-        UserDto dto = new UserDto("john", "john@example.com");
+        UserDto dto = new UserDto("john");
 
         User user = userMapper.toEntity(dto);
 
         assertNotNull(user);
         assertEquals("john", user.getUsername());
-        assertEquals("john@example.com", user.getEmail());
     }
 
     @Test
