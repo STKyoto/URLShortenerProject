@@ -23,8 +23,6 @@ public class User {
     @Column(name = "password_hash", nullable = false)
     private String password;
 
-    @Column(unique = true)
-    private String email;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Link> links = new ArrayList<>();
