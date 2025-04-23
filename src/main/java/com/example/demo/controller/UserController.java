@@ -2,8 +2,6 @@ package com.example.demo.controller;
 
 import com.example.demo.dto.UserDto;
 import com.example.demo.service.UserService;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,11 +19,6 @@ public class UserController {
     @GetMapping("/getAllUsers")
     public List<UserDto> getAllUsers() {
         return userService.getAllUsers();
-    }
-
-    @GetMapping("/me")
-    public UserDto getCurrentUser(@AuthenticationPrincipal UserDetails userDetails) {
-        return userService.findByUsername(userDetails.getUsername());
     }
 
     @PostMapping("/update/{id}")

@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.dto.LinkDto;
+import com.example.demo.dto.LinkRequestDto;
 import com.example.demo.mapper.LinkMapper;
 import com.example.demo.model.Link;
 import com.example.demo.service.LinkService;
