@@ -22,13 +22,7 @@ class AuthControllerTest {
     private MockMvc mockMvc;
     private ObjectMapper objectMapper;
 
-    @BeforeEach
-    void setUp() {
-        authService = mock(AuthenticationService.class);
-        AuthController authController = new AuthController(authService);
-        mockMvc = MockMvcBuilders.standaloneSetup(authController).build();
-        objectMapper = new ObjectMapper();
-    }
+
 
     @Test
     void login_ShouldReturnAuthResponse() throws Exception {
