@@ -19,14 +19,11 @@ public class RegController {
 
     @PostMapping("/registration")
     public ResponseEntity<String> registerUser(@Valid @RequestBody UserRegRequest request) {
-
         if (userRepository.existsByUsername(request.getUsername())) {
             return ResponseEntity.badRequest().body("Username is already taken");
         }
-
         User user = new User(request.getUsername(), request.getPassword());
         userService.registerUser(user);
-
         return ResponseEntity.ok("User registered successfully");
     }
 }

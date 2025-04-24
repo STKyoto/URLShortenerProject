@@ -15,7 +15,6 @@ public class LinkMapper {
         return dto;
     }
 
-
     public static Link toEntity(LinkRequestDto dto) {
         Link link = new Link();
         link.setOriginalUrl(dto.getOriginalUrl());

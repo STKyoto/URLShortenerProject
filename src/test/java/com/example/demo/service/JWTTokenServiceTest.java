@@ -5,7 +5,6 @@ import com.auth0.jwt.algorithms.Algorithm;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.util.ReflectionTestUtils;
-
 import java.sql.Date;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -51,7 +50,6 @@ class JWTTokenServiceTest {
 
             Algorithm algorithm = Algorithm.HMAC256("test-secret-key");
 
-            // Токен, який вже прострочений
             String expiredToken = JWT.create()
                     .withSubject("bob")
                     .withIssuedAt(new Date(System.currentTimeMillis() - 10000))

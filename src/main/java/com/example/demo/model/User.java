@@ -3,7 +3,6 @@ package com.example.demo.model;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,7 +26,6 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Link> links = new ArrayList<>();
 
-
     public User() {}
 
     public User(String username, String password) {
@@ -35,4 +33,3 @@ public class User {
         this.password = password;
     }
 }
-
