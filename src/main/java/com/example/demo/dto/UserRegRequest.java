@@ -18,5 +18,10 @@ public class UserRegRequest {
             message = "Password must be at least 8 characters long and include uppercase, lowercase letters, and digits"
     )
     private String password;
+
+    public UserRegRequest(String username, String password) {
+        this.username = username;
+        this.password = password;
+    }
 }
 
