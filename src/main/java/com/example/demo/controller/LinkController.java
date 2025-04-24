@@ -22,15 +22,14 @@ public class LinkController {
     }
 
     @PostMapping("/create")
-    public LinkDto createLink(@RequestParam String originalUrl,
-                              @AuthenticationPrincipal String username,
-                              @RequestParam(required = false) String expiresAt) {
+    public LinkDto createLink(@RequestBody LinkRequestDto request,
+                              @AuthenticationPrincipal String username) {
         LocalDateTime expiration = null;
-        if (expiresAt != null && !expiresAt.isEmpty()) {
-            expiration = LocalDateTime.parse(expiresAt);
+        if (request.getExpiresAt() != null && !request.getExpiresAt().isEmpty()) {
+            expiration = LocalDateTime.parse(request.getExpiresAt());
         }
 
-        Link createdLink = linkService.createShortLink(originalUrl, username, expiration);
+        Link createdLink = linkService.createShortLink(request.getOriginalUrl(), username, expiration);
         return LinkMapper.toDto(createdLink);
     }
 
@@ -43,13 +42,12 @@ public class LinkController {
             throw new RuntimeException("This link has expired");
         }
 
+
+        linkService.recordClick(shortUrl);
         return LinkMapper.toDto(link);
     }
 
-    @PostMapping("/{shortUrl}/click")
-    public void recordClick(@PathVariable String shortUrl) {
-        linkService.recordClick(shortUrl);
-    }
+
 
     @GetMapping("/{shortUrl}/stats")
     public long getClickStats(@PathVariable String shortUrl) {

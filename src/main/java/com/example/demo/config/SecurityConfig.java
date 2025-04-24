@@ -34,7 +34,9 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> {
                     auth.requestMatchers("/UrlShortener/auth/**").permitAll()
                             .requestMatchers("/UrlShortener/links/create").authenticated()
-                            .requestMatchers("/UrlShortener/links/**").permitAll()
+                            .requestMatchers("/UrlShortener/links/{shortUrl}").permitAll()
+                            .requestMatchers("/UrlShortener/links/{shortUrl}/click").permitAll()
+                            .requestMatchers("/UrlShortener/links/{shortUrl}/stats").permitAll()
                             .anyRequest().authenticated();
                 })
 
