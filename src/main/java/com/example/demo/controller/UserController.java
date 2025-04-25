@@ -22,6 +22,6 @@ public class UserController {
 
     @PostMapping("/update/{id}")
     public UserDto updateUser(@PathVariable Long id, @RequestBody UserDto userDto) {
-        return userService.updateUser(id, userDto);
+        return userService.updateUser(Math.toIntExact(id), userDto);
     }
 }

@@ -14,6 +14,7 @@ import java.util.Optional;
 @Repository
 public interface LinkRepository  extends JpaRepository<Link, Integer> {
     Optional<Link> findByShortUrl(String url);
+
     boolean existsByShortUrl(String url);
 
     @Modifying
@@ -21,7 +22,9 @@ public interface LinkRepository  extends JpaRepository<Link, Integer> {
     void incrementClickCount(@Param("id") int id);
 
     List<Link> findByUser(User user);
+
     @Query("SELECT l FROM Link l WHERE l.user = :user AND (l.expiresAt IS NULL OR l.expiresAt > :now)")
     List<Link> findActiveLinksByUser(@Param("user") User user, @Param("now") LocalDateTime now);
+
     Optional<Link> findByShortUrlAndUser(String shortUrl, User user);
 }

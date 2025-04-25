@@ -80,7 +80,6 @@ public class LinkController {
         }
     }
 
-
     @GetMapping("/my")
     public ResponseEntity<List<LinkDto>> getAllMyLinks(@AuthenticationPrincipal String username) {
         if (username == null) {
@@ -90,7 +89,6 @@ public class LinkController {
         return ResponseEntity.ok(userLinks);
     }
 
-
     @GetMapping("/my/active")
     public ResponseEntity<List<LinkDto>> getMyActiveLinks(@AuthenticationPrincipal String username) {
         if (username == null) {
@@ -99,7 +97,6 @@ public class LinkController {
         List<LinkDto> activeUserLinks = linkService.getActiveUserLinks(username);
         return ResponseEntity.ok(activeUserLinks);
     }
-
 
     @DeleteMapping("/{shortUrl}")
     public ResponseEntity<Void> deleteMyLink(@PathVariable String shortUrl,
@@ -116,4 +113,3 @@ public class LinkController {
         }
     }
 }
-

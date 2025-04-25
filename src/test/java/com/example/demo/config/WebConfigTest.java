@@ -24,7 +24,7 @@ class SecurityConfigTest {
         userService = mock(UserService.class);
         jwtTokenService = mock(JWTTokenService.class);
         jwtAuthenticationFilter = mock(JWTAuthenticationFilter.class);
-        securityConfig = new SecurityConfig(userService, jwtTokenService, jwtAuthenticationFilter);
+        securityConfig = new SecurityConfig(jwtAuthenticationFilter);
     }
 
     @Test

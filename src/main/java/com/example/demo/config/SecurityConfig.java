@@ -1,7 +1,5 @@
 package com.example.demo.config;
 
-import com.example.demo.service.JWTTokenService;
-import com.example.demo.service.UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -18,13 +16,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-    private final UserService userService;
-    private final JWTTokenService jwtTokenService;
     private final JWTAuthenticationFilter jwtAuthenticationFilter;
 
-    public SecurityConfig(UserService userService,  JWTTokenService jwtTokenService, JWTAuthenticationFilter jwtAuthenticationFilter){
-        this.userService = userService;
-        this.jwtTokenService = jwtTokenService;
+    public SecurityConfig(JWTAuthenticationFilter jwtAuthenticationFilter){
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
     }
 
@@ -34,21 +28,18 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> {
                     auth
-                            .requestMatchers("/UrlShortener/auth/**").permitAll() // Реєстрація, логін
-                            .requestMatchers(HttpMethod.GET, "/UrlShortener/links/{shortUrl}").permitAll() // Перехід (редирект)
-                            .requestMatchers(HttpMethod.GET, "/UrlShortener/links/{shortUrl}/stats").permitAll() // Статистика для всіх
+                            .requestMatchers("/UrlShortener/auth/**").permitAll()
+                            .requestMatchers(HttpMethod.GET, "/UrlShortener/links/{shortUrl}").permitAll()
+                            .requestMatchers(HttpMethod.GET, "/UrlShortener/links/{shortUrl}/stats").permitAll()
 
-                            // Ендпоїнти, що вимагають автентифікації
-                            .requestMatchers(HttpMethod.POST, "/UrlShortener/links/create").authenticated() // Створення
-                            .requestMatchers(HttpMethod.GET, "/UrlShortener/links/my").authenticated() // Всі мої посилання
-                            .requestMatchers(HttpMethod.GET, "/UrlShortener/links/my/active").authenticated() // Активні мої
-                            .requestMatchers(HttpMethod.DELETE, "/UrlShortener/links/{shortUrl}").authenticated() // Видалення мого
+                            .requestMatchers(HttpMethod.POST, "/UrlShortener/links/create").authenticated()
+                            .requestMatchers(HttpMethod.GET, "/UrlShortener/links/my").authenticated()
+                            .requestMatchers(HttpMethod.GET, "/UrlShortener/links/my/active").authenticated()
+                            .requestMatchers(HttpMethod.DELETE, "/UrlShortener/links/{shortUrl}").authenticated()
 
-                            // Решта ендпоїнтів (якщо є, напр. /users)
-                            .requestMatchers("/UrlShortener/users/**").authenticated() // Припустимо, що вони теж захищені
+                            .requestMatchers("/UrlShortener/users/**").authenticated()
 
-                            // Забороняємо все інше (залежить від політики)
-                            .anyRequest().authenticated(); // Або .denyAll() якщо не хочете непередбачених дозволів
+                            .anyRequest().authenticated();
                 })
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 

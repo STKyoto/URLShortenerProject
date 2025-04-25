@@ -24,4 +24,3 @@ public class UserRegRequest {
         this.password = password;
     }
 }
-

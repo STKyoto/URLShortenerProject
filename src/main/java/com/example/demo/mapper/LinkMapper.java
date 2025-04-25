@@ -3,7 +3,9 @@ package com.example.demo.mapper;
 import com.example.demo.dto.LinkDto;
 import com.example.demo.model.Link;
 import com.example.demo.model.User;
+import org.springframework.stereotype.Component;
 
+@Component
 public class LinkMapper {
 
     public static LinkDto toDto(Link link) {
