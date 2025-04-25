@@ -1,5 +1,8 @@
 package com.example.demo.service;
 
+import com.example.demo.dto.LinkDto;
+import com.example.demo.mapper.LinkMapper;
+import org.springframework.security.access.AccessDeniedException;
 import com.example.demo.model.Link;
 import com.example.demo.model.User;
 import com.example.demo.repository.LinkRepository;
@@ -7,6 +10,8 @@ import com.example.demo.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.stream.Collectors;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.LocalDateTime;
@@ -25,6 +30,7 @@ public class LinkService {
         this.userRepository = userRepository;
     }
 
+    @Transactional
     public Link createShortLink(String originalUrl, String username, LocalDateTime expiresAt) {
         validateShortLink(originalUrl);
         User user = userRepository.findByUsername(username).orElseThrow(() -> new RuntimeException("User not found"));
@@ -81,6 +87,41 @@ public class LinkService {
         } else {
             throw new RuntimeException("Link not found");
         }
+    }
+
+    public List<LinkDto> getAllUserLinks(String username) {
+        User user = findUserByUsername(username);
+        List<Link> links = linkRepository.findByUser(user);
+        return links.stream()
+                .map(LinkMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
+    public List<LinkDto> getActiveUserLinks(String username) {
+        User user = findUserByUsername(username);
+        List<Link> activeLinks = linkRepository.findActiveLinksByUser(user, LocalDateTime.now());
+        return activeLinks.stream()
+                .map(LinkMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public void deleteUserLink(String shortUrl, String username) {
+        User user = findUserByUsername(username);
+        Link link = linkRepository.findByShortUrl(shortUrl)
+                .orElseThrow(() -> new RuntimeException("Link not found with shortUrl: " + shortUrl));
+
+
+        if (link.getUser().getId() != user.getId()) {
+            throw new AccessDeniedException("User " + username + " is not authorized to delete link " + shortUrl);
+        }
+
+        linkRepository.delete(link);
+    }
+
+    private User findUserByUsername(String username) {
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found: " + username));
     }
 
 }

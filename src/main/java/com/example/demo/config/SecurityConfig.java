@@ -4,6 +4,7 @@ import com.example.demo.service.JWTTokenService;
 import com.example.demo.service.UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -32,16 +33,28 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> {
-                    auth.requestMatchers("/UrlShortener/auth/**").permitAll()
-                            .requestMatchers("/UrlShortener/links/create").authenticated()
-                            .requestMatchers("/UrlShortener/links/**").permitAll()
-                            .anyRequest().authenticated();
-                })
+                    auth
+                            // Публічні ендпоїнти
+                            .requestMatchers("/UrlShortener/auth/**").permitAll() // Реєстрація, логін
+                            .requestMatchers(HttpMethod.GET, "/UrlShortener/links/{shortUrl}").permitAll() // Перехід (редирект)
+                            .requestMatchers(HttpMethod.GET, "/UrlShortener/links/{shortUrl}/stats").permitAll() // Статистика для всіх
 
+                            // Ендпоїнти, що вимагають автентифікації
+                            .requestMatchers(HttpMethod.POST, "/UrlShortener/links/create").authenticated() // Створення
+                            .requestMatchers(HttpMethod.GET, "/UrlShortener/links/my").authenticated() // Всі мої посилання
+                            .requestMatchers(HttpMethod.GET, "/UrlShortener/links/my/active").authenticated() // Активні мої
+                            .requestMatchers(HttpMethod.DELETE, "/UrlShortener/links/{shortUrl}").authenticated() // Видалення мого
+
+                            // Решта ендпоїнтів (якщо є, напр. /users)
+                            .requestMatchers("/UrlShortener/users/**").authenticated() // Припустимо, що вони теж захищені
+
+                            // Забороняємо все інше (залежить від політики)
+                            .anyRequest().authenticated(); // Або .denyAll() якщо не хочете непередбачених дозволів
+                })
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+
         return http.build();
     }
-
     @Bean
     public PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
@@ -51,5 +64,6 @@ public class SecurityConfig {
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
     }
+
 
 }

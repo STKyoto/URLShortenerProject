@@ -68,7 +68,7 @@ public class UserService implements UserDetailsService {
         return userMapper.toDto(user);
     }
 
-    public UserDto updateUser(Long id, UserDto userDto) {
+    public UserDto updateUser(Integer id, UserDto userDto) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
