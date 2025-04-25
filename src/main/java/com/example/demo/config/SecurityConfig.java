@@ -34,7 +34,6 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> {
                     auth
-                            // Публічні ендпоїнти
                             .requestMatchers("/UrlShortener/auth/**").permitAll() // Реєстрація, логін
                             .requestMatchers(HttpMethod.GET, "/UrlShortener/links/{shortUrl}").permitAll() // Перехід (редирект)
                             .requestMatchers(HttpMethod.GET, "/UrlShortener/links/{shortUrl}/stats").permitAll() // Статистика для всіх
@@ -55,6 +54,7 @@ public class SecurityConfig {
 
         return http.build();
     }
+
     @Bean
     public PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
@@ -64,6 +64,4 @@ public class SecurityConfig {
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
     }
-
-
 }

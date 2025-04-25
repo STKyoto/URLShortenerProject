@@ -1,10 +1,8 @@
 package com.example.demo.model;
 
-
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-
 import java.time.LocalDateTime;
 
 @Getter
@@ -35,9 +33,7 @@ public class Link {
     @Column(name = "click_count", nullable = false)
     private int clickCount = 0;
 
-    //constructors, getters and setters
-    public Link() {
-    }
+    public Link() {}
 
     public Link(String originalUrl, String shortUrl, User user, LocalDateTime expiresAt) {
         this.originalUrl = originalUrl;
@@ -45,6 +41,4 @@ public class Link {
         this.user = user;
         this.expiresAt = expiresAt;
     }
-
-
 }

@@ -68,7 +68,6 @@ public class LinkService {
         }
     }
 
-
     public void validateShortLink(String originalUrl) {
         if (originalUrl.length() > 2048) {
             throw new IllegalArgumentException("Original URL is too long");

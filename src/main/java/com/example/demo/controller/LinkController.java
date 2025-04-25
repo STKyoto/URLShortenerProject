@@ -10,7 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-
 import java.net.URI;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -25,8 +24,6 @@ public class LinkController {
     public LinkController(LinkService linkService) {
         this.linkService = linkService;
     }
-
-
 
     @PostMapping("/create")
     public ResponseEntity<LinkDto> createLink(@RequestBody LinkRequestDto request,
@@ -50,38 +47,23 @@ public class LinkController {
         }
     }
 
-
     @GetMapping("/{shortUrl}")
-    public ResponseEntity<Void> redirectToOriginalUrl(@PathVariable String shortUrl) {
+    public ResponseEntity<?> redirectToOriginal(@PathVariable String shortUrl) {
         Optional<Link> linkOpt = linkService.getLinkByShortUrl(shortUrl);
-
-        if (linkOpt.isEmpty()) {
-            return ResponseEntity.notFound().build();
+        if (!linkOpt.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Link not found");
         }
-
         Link link = linkOpt.get();
-
-
         if (link.getExpiresAt() != null && link.getExpiresAt().isBefore(LocalDateTime.now())) {
-
-            return ResponseEntity.status(HttpStatus.GONE).build();
+            return ResponseEntity.status(HttpStatus.GONE)
+                    .body("This link has expired");
         }
-
-
         linkService.recordClick(shortUrl);
-
-
-        HttpHeaders headers = new HttpHeaders();
-        try {
-            headers.setLocation(new URI(link.getOriginalUrl()));
-        } catch (Exception e) {
-            // Якщо originalUrl не валідний (хоча не мав би бути)
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
-
-        return new ResponseEntity<>(headers, HttpStatus.FOUND);
+        return ResponseEntity.status(HttpStatus.FOUND)
+                .location(URI.create(link.getOriginalUrl()))
+                .build();
     }
-
 
     @GetMapping("/{shortUrl}/stats")
     public ResponseEntity<Long> getClickStats(@PathVariable String shortUrl) {

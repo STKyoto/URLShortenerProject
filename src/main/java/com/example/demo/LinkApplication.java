@@ -10,5 +10,4 @@ public class LinkApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(LinkApplication.class, args);
 	}
-
 }

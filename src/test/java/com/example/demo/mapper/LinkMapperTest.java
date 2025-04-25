@@ -4,7 +4,6 @@ import com.example.demo.dto.LinkDto;
 import com.example.demo.model.Link;
 import com.example.demo.model.User;
 import org.junit.jupiter.api.Test;
-
 import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.*;
