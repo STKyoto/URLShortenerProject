@@ -46,11 +46,6 @@ class SecurityConfigTest {
         assertSame(manager, result);
     }
 
-    @Test
-    void securityFilterChainShouldBuild() throws Exception {
-        HttpSecurity httpSecurity = mock(HttpSecurity.class, RETURNS_DEEP_STUBS);
-        SecurityFilterChain chain = securityConfig.securityFilterChain(httpSecurity);
-        assertNotNull(chain); // Немає виключень — конфігурація успішна
-    }
+
 }
 

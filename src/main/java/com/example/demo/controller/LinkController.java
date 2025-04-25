@@ -5,12 +5,14 @@ import com.example.demo.dto.LinkRequestDto;
 import com.example.demo.mapper.LinkMapper;
 import com.example.demo.model.Link;
 import com.example.demo.service.LinkService;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import java.net.URI;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -18,33 +20,31 @@ import java.util.Optional;
 public class LinkController {
 
     private final LinkService linkService;
-    private final String baseUrl = "http://localhost:8080/UrlShortener/links";
 
     public LinkController(LinkService linkService) {
         this.linkService = linkService;
     }
 
     @PostMapping("/create")
-    public ResponseEntity<?> createLink(@RequestBody LinkRequestDto request,
-                                        @AuthenticationPrincipal String username) {
-        if (request.getOriginalUrl() == null || request.getOriginalUrl().isEmpty()) {
-            return ResponseEntity.badRequest().body("Original URL must be provided.");
-        }
-        if (request.getExpiresAt() == null || request.getExpiresAt().isEmpty()) {
-            return ResponseEntity.badRequest().body("Expiration date must be provided.");
-        }
-        LocalDateTime expiration;
-        try {
-            expiration = LocalDateTime.parse(request.getExpiresAt());
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Expiration date format is invalid.");
-        }
-        Link createdLink = linkService.createShortLink(request.getOriginalUrl(), username, expiration);
-        String shortUrlWithBase = baseUrl + "/" + createdLink.getShortUrl();
-        LinkDto linkDto = LinkMapper.toDto(createdLink);
-        linkDto.setShortUrl(shortUrlWithBase);
+    public ResponseEntity<LinkDto> createLink(@RequestBody LinkRequestDto request,
+                                              @AuthenticationPrincipal String username) {
 
-        return ResponseEntity.ok(linkDto);
+        LocalDateTime expiration = null;
+        if (request.getExpiresAt() != null && !request.getExpiresAt().isEmpty()) {
+            try {
+                expiration = LocalDateTime.parse(request.getExpiresAt());
+            } catch (Exception e) {
+                return ResponseEntity.badRequest().build();
+            }
+        }
+        try {
+            Link createdLink = linkService.createShortLink(request.getOriginalUrl(), username, expiration);
+            return ResponseEntity.status(HttpStatus.CREATED).body(LinkMapper.toDto(createdLink));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().build();
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
     @GetMapping("/{shortUrl}")
@@ -66,8 +66,54 @@ public class LinkController {
     }
 
     @GetMapping("/{shortUrl}/stats")
-    public long getClickStats(@PathVariable String shortUrl) {
-        return linkService.getClickCountByShortUrl(shortUrl);
+    public ResponseEntity<Long> getClickStats(@PathVariable String shortUrl) {
+        try {
+
+            if (linkService.getLinkByShortUrl(shortUrl).isEmpty()) {
+                return ResponseEntity.notFound().build();
+            }
+            long count = linkService.getClickCountByShortUrl(shortUrl);
+            return ResponseEntity.ok(count);
+        } catch (RuntimeException e) {
+
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+
+    @GetMapping("/my")
+    public ResponseEntity<List<LinkDto>> getAllMyLinks(@AuthenticationPrincipal String username) {
+        if (username == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        List<LinkDto> userLinks = linkService.getAllUserLinks(username);
+        return ResponseEntity.ok(userLinks);
+    }
+
+
+    @GetMapping("/my/active")
+    public ResponseEntity<List<LinkDto>> getMyActiveLinks(@AuthenticationPrincipal String username) {
+        if (username == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        List<LinkDto> activeUserLinks = linkService.getActiveUserLinks(username);
+        return ResponseEntity.ok(activeUserLinks);
+    }
+
+
+    @DeleteMapping("/{shortUrl}")
+    public ResponseEntity<Void> deleteMyLink(@PathVariable String shortUrl,
+                                             @AuthenticationPrincipal String username) {
+        if (username == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        try {
+            linkService.deleteUserLink(shortUrl, username);
+            return ResponseEntity.noContent().build();
+        } catch (RuntimeException e) {
+
+            return ResponseEntity.notFound().build();
+        }
     }
 }
 
