@@ -1,7 +1,6 @@
 package com.example.demo.model;
 
 import org.junit.jupiter.api.Test;
-
 import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -28,7 +27,6 @@ class LinkTest {
         assertEquals(user, link.getUser());
         assertEquals(expiresAt, link.getExpiresAt());
 
-        // Тестуємо сеттери
         link.setId(42);
         link.setClickCount(5);
         assertEquals(42, link.getId());

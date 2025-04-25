@@ -6,7 +6,6 @@ import com.example.demo.repository.LinkRepository;
 import com.example.demo.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.LocalDateTime;
@@ -61,7 +60,6 @@ public class LinkService {
             throw new RuntimeException("Link not found");
         }
     }
-
 
     public void validateShortLink(String originalUrl) {
         if (originalUrl.length() > 2048) {

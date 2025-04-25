@@ -38,7 +38,6 @@ public class SecurityConfig {
                             .requestMatchers("/UrlShortener/links/{shortUrl}/stats").permitAll()
                             .anyRequest().authenticated();
                 })
-
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
@@ -52,5 +51,4 @@ public class SecurityConfig {
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
     }
-
 }

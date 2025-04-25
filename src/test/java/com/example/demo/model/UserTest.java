@@ -1,7 +1,6 @@
 package com.example.demo.model;
 
 import org.junit.jupiter.api.Test;
-
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -45,13 +44,9 @@ class UserTest {
         link1.setOriginalUrl("https://example.com");
         link1.setShortUrl("abc123");
         link1.setUser(user);
-
         user.getLinks().add(link1);
-
         assertEquals(1, user.getLinks().size());
         assertEquals(link1, user.getLinks().get(0));
-
-        // Remove link and check
         user.getLinks().remove(link1);
         assertTrue(user.getLinks().isEmpty());
     }
@@ -60,7 +55,6 @@ class UserTest {
     void testLinksListReference() {
         User user = new User();
         List<Link> links = user.getLinks();
-
         links.add(new Link());
         assertEquals(1, user.getLinks().size(), "Modifications on the returned list should affect the original list");
     }
